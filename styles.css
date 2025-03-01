@@ -4,55 +4,159 @@ body {
     color: #fff;
     margin: 0;
     padding: 0;
+    font-size: 16px;
+    line-height: 1.6;
 }
-header, footer {
-    text-align: center;
-    padding: 20px;
-}
-main {
-    padding: 20px;
+
+.container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 20px;
 }
-h1, h2 {
-    margin: 0;
+
+header {
+    text-align: center;
+    padding: 40px 0;
+}
+
+header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
     font-weight: 700;
 }
-ul {
+
+header p {
+    font-size: 1.1em;
+    color: #ccc;
+    margin: 0;
+}
+
+main {
+    padding: 20px 0;
+}
+
+#techniques ul {
     list-style-type: none;
     padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
 }
-li {
-    margin: 15px 0;
+
+#techniques li {
+    margin: 0;
 }
-a {
+
+#techniques a {
     color: #fff;
     text-decoration: none;
     font-weight: 700;
+    padding: 10px 20px;
+    background-color: #333;
+    border: 1px solid #666;
+    display: inline-block;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
-a:hover {
-    text-decoration: underline;
+
+#techniques a:hover {
+    background-color: #555;
+    position: relative;
 }
-p {
-    color: #ccc;
-    font-weight: 400;
+
+#techniques a:hover::after {
+    content: attr(data-description);
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    white-space: nowrap;
+    z-index: 1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
 }
+
+#topic-input, #learning-schedule {
+    text-align: center;
+}
+
+#topic-input h2, #learning-schedule h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
 input, button {
     font-family: 'Montserrat', sans-serif;
     background-color: #333;
     color: #fff;
     border: 1px solid #666;
-    padding: 10px;
+    padding: 10px 20px;
     margin: 10px 0;
+    border-radius: 5px;
+    font-size: 1em;
 }
-button:hover {
+
+button:hover, .start-over-button:hover {
     background-color: #555;
 }
-#learning-steps > div {
-    margin-bottom: 20px;
-    padding: 15px;
+
+.start-over-button {
+    padding: 10px 20px;
+    background-color: #333;
     border: 1px solid #666;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-top: 20px;
+    display: inline-block;
 }
-footer p {
+
+.loading {
+    text-align: center;
+    padding: 20px;
+    color: #ccc;
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
     color: #999;
+    font-size: 0.9em;
+}
+
+@media (max-width: 600px) {
+    body {
+        font-size: 14px;
+    }
+    .container {
+        padding: 10px;
+    }
+    header {
+        padding: 20px 0;
+    }
+    header h1 {
+        font-size: 2em;
+    }
+    header p {
+        font-size: 1em;
+    }
+    #techniques ul {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #techniques a {
+        padding: 8px 16px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    input, button, .start-over-button {
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
