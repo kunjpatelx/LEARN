@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEARN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>LEARN</h1>
+    </header>
+    <main>
+        <section id="intro">
+            <p>Welcome to LEARN, your personal learning assistant. Choose a technique below to master any topic.</p>
+        </section>
+        <section id="techniques">
+            <h2>Learning Techniques</h2>
+            <ul>
+                <li>
+                    <a href="#" onclick="selectTechnique('5-step')">5-Step Mastery</a>
+                    <p>A structured 5-step process to deeply understand and retain any topic.</p>
+                </li>
+                <li>
+                    <a href="#" onclick="selectTechnique('feynman')">Feynman Technique</a>
+                    <p>Learn by teaching—simplify complex topics to master them.</p>
+                </li>
+                <li>
+                    <a href="#" onclick="selectTechnique('pomodoro')">Pomodoro Technique</a>
+                    <p>Boost focus with timed study sessions and breaks.</p>
+                </li>
+                <li>
+                    <a href="#" onclick="selectTechnique('spaced-repetition')">Spaced Repetition</a>
+                    <p>Reinforce learning by reviewing at increasing intervals.</p>
+                </li>
+                <li>
+                    <a href="#" onclick="selectTechnique('mind-mapping')">Mind Mapping</a>
+                    <p>Visualize and connect ideas for better understanding.</p>
+                </li>
+            </ul>
+        </section>
+        <section id="topic-input" style="display: none;">
+            <h2>Enter Your Topic</h2>
+            <input type="text" id="topic" placeholder="e.g., Quantum Physics">
+            <button onclick="startLearning()">Start Learning</button>
+        </section>
+        <section id="learning-steps" style="display: none;">
+            <!-- Steps dynamically added here -->
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 LEARN. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
