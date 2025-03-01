@@ -19,7 +19,7 @@ async function startLearning() {
 
 async function generateLearningSchedule(topic) {
     const scheduleDiv = document.getElementById('learning-schedule');
-    scheduleDiv.innerHTML = '<p>Loading schedule...</p>';
+    scheduleDiv.innerHTML = '<p class="loading">Loading schedule...</p>';
 
     let schedulePrompt = '';
     switch (selectedTechnique) {
@@ -48,9 +48,17 @@ async function generateLearningSchedule(topic) {
 
     try {
         const response = await getLLMResponse(topic, schedulePrompt);
-        scheduleDiv.innerHTML = `<h2>Learning Schedule for ${topic} (${selectedTechnique.charAt(0).toUpperCase() + selectedTechnique.slice(1)} Technique)</h2><p>${response}</p>`;
+        scheduleDiv.innerHTML = `
+            <h2>Learning Schedule for ${topic} (${selectedTechnique.charAt(0).toUpperCase() + selectedTechnique.slice(1)} Technique)</h2>
+            <p>${response}</p>
+            <button onclick="downloadPDF('${topic}', '${selectedTechnique}')">Download Schedule as PDF</button>
+        `;
     } catch (error) {
-        scheduleDiv.innerHTML = `<p>Error generating schedule: ${error.message}</p>`;
+        scheduleDiv.innerHTML = `
+            <p>Error fetching schedule: ${error.message}</p>
+            <p>Unable to generate a schedule. Download instructions on how to implement learning manually:</p>
+            <a href="/learning-instructions.pdf" download="learning-instructions.pdf">Download Learning Instructions (PDF)</a>
+        `;
     }
 
     addStartOverButton();
@@ -76,9 +84,24 @@ async function getLLMResponse(topic, prompt) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ topic, prompt })
         });
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         return data.text || 'Error fetching response.';
     } catch (error) {
         return `Error: ${error.message}`;
     }
+}
+
+function downloadPDF(topic, technique) {
+    const element = document.getElementById('learning-schedule');
+    const opt = {
+        margin: 0.5,
+        filename: `learning-schedule-${topic}-${technique}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    html2pdf().from(element).set(opt).save();
 }
