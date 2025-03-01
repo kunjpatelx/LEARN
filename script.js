@@ -2,7 +2,6 @@ let selectedTechnique = '';
 
 function selectTechnique(technique) {
     selectedTechnique = technique;
-    document.getElementById('intro').style.display = 'none';
     document.getElementById('techniques').style.display = 'none';
     document.getElementById('topic-input').style.display = 'block';
 }
@@ -14,103 +13,60 @@ async function startLearning() {
         return;
     }
     document.getElementById('topic-input').style.display = 'none';
-    document.getElementById('learning-steps').style.display = 'block';
-    if (selectedTechnique === '5-step') {
-        await start5StepLearning(topic);
-    } else if (selectedTechnique === 'feynman') {
-        await startFeynmanLearning(topic);
-    } else if (selectedTechnique === 'pomodoro') {
-        await startPomodoroLearning(topic);
-    } else if (selectedTechnique === 'spaced-repetition') {
-        await startSpacedRepetitionLearning(topic);
-    } else if (selectedTechnique === 'mind-mapping') {
-        await startMindMappingLearning(topic);
+    document.getElementById('learning-schedule').style.display = 'block';
+    await generateLearningSchedule(topic);
+}
+
+async function generateLearningSchedule(topic) {
+    const scheduleDiv = document.getElementById('learning-schedule');
+    scheduleDiv.innerHTML = '<p>Loading schedule...</p>';
+
+    let schedulePrompt = '';
+    switch (selectedTechnique) {
+        case '5-step':
+            schedulePrompt = `Generate a detailed 5-day learning schedule for mastering ${topic} using a 5-step process: Identify, Explain simply, Break down, Apply practically, and Review/reinforce. Provide daily tasks with clear instructions and estimated times.`;
+            break;
+        case 'feynman':
+            schedulePrompt = `Generate a 3-day learning schedule for mastering ${topic} using the Feynman Technique: Explain as if teaching a child, Identify gaps, Fill gaps, Simplify. Provide daily tasks with clear instructions and estimated times.`;
+            break;
+        case 'pomodoro':
+            schedulePrompt = `Generate a 1-week learning schedule for ${topic} using the Pomodoro Technique (25-minute focus sessions with 5-minute breaks). Provide daily tasks, session counts, and clear instructions for each day.`;
+            break;
+        case 'spaced-repetition':
+            schedulePrompt = `Generate a 2-week learning schedule for ${topic} using Spaced Repetition, with reviews at increasing intervals (e.g., Day 1, Day 3, Day 7, Day 14). Provide daily tasks and clear instructions.`;
+            break;
+        case 'mind-mapping':
+            schedulePrompt = `Generate a 3-day learning schedule for ${topic} using Mind Mapping: Create a central idea, Branch out concepts, Connect details, Visualize. Provide daily tasks with clear instructions and estimated times.`;
+            break;
+        case 'sq3r':
+            schedulePrompt = `Generate a 5-day learning schedule for ${topic} using the SQ3R Technique: Survey, Question, Read, Recite, Review. Provide daily tasks with clear instructions and estimated times.`;
+            break;
+        default:
+            scheduleDiv.innerHTML = '<p>Technique not supported. Please select another.</p>';
+            return;
     }
-}
 
-async function start5StepLearning(topic) {
-    const steps = [
-        'Explain the topic in simple terms.',
-        'Break it down further into smaller parts.',
-        'Apply it practically with an example.',
-        'Review and reinforce the key points.'
-    ];
-    await processSteps(topic, steps);
-}
-
-async function startFeynmanLearning(topic) {
-    const steps = [
-        'Explain the topic as if teaching it to a child.',
-        'Identify gaps in your understanding.',
-        'Fill those gaps with a clear explanation.',
-        'Simplify your explanation further.'
-    ];
-    await processSteps(topic, steps);
-}
-
-async function startPomodoroLearning(topic) {
-    const steps = [
-        'Learn about the topic for 25 minutes (simulated here).',
-        'Take a 5-minute break (simulated response).',
-        'Review what you learned in the next 25 minutes.',
-        'Summarize key points after a break.'
-    ];
-    await processSteps(topic, steps);
-}
-
-async function startSpacedRepetitionLearning(topic) {
-    const steps = [
-        'Introduce the topic with a basic overview.',
-        'Review it after a short interval (e.g., 1 day).',
-        'Reinforce it after a longer interval (e.g., 1 week).',
-        'Master it with a final review.'
-    ];
-    await processSteps(topic, steps);
-}
-
-async function startMindMappingLearning(topic) {
-    const steps = [
-        'Create a central idea for the topic.',
-        'Branch out key concepts related to it.',
-        'Connect those concepts with details.',
-        'Visualize the full mind map in words.'
-    ];
-    await processSteps(topic, steps);
-}
-
-async function processSteps(topic, steps) {
-    for (let i = 0; i < steps.length; i++) {
-        const stepDiv = document.createElement('div');
-        stepDiv.innerHTML = `<h3>Step ${i + 1}: ${steps[i]}</h3>`;
-        document.getElementById('learning-steps').appendChild(stepDiv);
-        const response = await getLLMResponse(topic, steps[i]);
-        const responseP = document.createElement('p');
-        responseP.textContent = response;
-        stepDiv.appendChild(responseP);
-        if (i < steps.length - 1) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = 'Your thoughts or questions';
-            stepDiv.appendChild(input);
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Next';
-            stepDiv.appendChild(nextButton);
-            await new Promise(resolve => nextButton.onclick = resolve);
-        }
+    try {
+        const response = await getLLMResponse(topic, schedulePrompt);
+        scheduleDiv.innerHTML = `<h2>Learning Schedule for ${topic} (${selectedTechnique.charAt(0).toUpperCase() + selectedTechnique.slice(1)} Technique)</h2><p>${response}</p>`;
+    } catch (error) {
+        scheduleDiv.innerHTML = `<p>Error generating schedule: ${error.message}</p>`;
     }
+
     addStartOverButton();
 }
 
 function addStartOverButton() {
+    const scheduleDiv = document.getElementById('learning-schedule');
     const backButton = document.createElement('button');
     backButton.textContent = 'Start Over';
+    backButton.className = 'start-over-button';
     backButton.onclick = () => {
-        document.getElementById('learning-steps').innerHTML = '';
-        document.getElementById('learning-steps').style.display = 'none';
-        document.getElementById('intro').style.display = 'block';
+        document.getElementById('learning-schedule').innerHTML = '';
+        document.getElementById('learning-schedule').style.display = 'none';
         document.getElementById('techniques').style.display = 'block';
     };
-    document.getElementById('learning-steps').appendChild(backButton);
+    scheduleDiv.appendChild(backButton);
 }
 
 async function getLLMResponse(topic, prompt) {
